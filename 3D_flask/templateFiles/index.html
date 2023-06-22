@@ -3,35 +3,72 @@
 <head>
     <title>3D Part Defect Detection</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        #selected-file {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <h1>3D Part Defect Detection</h1>
+        <h1>3D part Defect Detection</h1>
+        <nav>
+            <ul class="nav-links">
+                <li><a href="/">Home</a></li>
+                <li><a href="/about">About</a></li>
+                <li><a href="/contact">Contact</a></li>
+            </ul>
+        </nav>
     </header>
+
 
     <section id="upload">
         <h2>Upload a File</h2>
         <form action="/upload" method="post" enctype="multipart/form-data">
-            <input type="file" name="file" id="file">
-            <label for="file">Choose a file</label>
+            <input type="file" name="file" id="file" onchange="updateFileLabel(this)">
+            <label for="file" class="file-label">Choose a file</label>
             <button type="submit">Upload</button>
         </form>
     </section>
 
-    <section id="about">
-        <h2>About</h2>
-        <p>
-            IITD-AIA-FSM project from 3D printed part for defect detection. It is the prototype
-        </p>
-    </section>
-
+     
+     <div id="selected-file">
+        <h3>Selected File:</h3>
+        <p id="file-name"></p>
+        <img id="preview-image" src="#" alt="Preview Image">
+    </div>
+     
     {% if result %}
+    <div class="result">
     <h2>Result:</h2>
     <p>{{ result }}</p>
+    </div>
     {% endif %}
 
     <footer>
         <p>&copy; 2023 3D Part Defect Detection</p>
     </footer>
+
+    <script>
+        function updateFileLabel(input) {
+            var fileLabel = document.querySelector('.file-label');
+            var fileName = input.files[0].name;
+            fileLabel.textContent = fileName;
+
+            var previewImage = document.getElementById('preview-image');
+            var file = input.files[0];
+            var reader = new FileReader();
+
+            reader.onload = function(event) {
+                previewImage.src = event.target.result;
+            }
+
+            reader.readAsDataURL(file);
+
+            var fileNameElement = document.getElementById('file-name');
+            fileNameElement.textContent = fileName;
+            document.getElementById('selected-file').style.display = 'block';
+        }
+    </script>
 </body>
 </html>
